@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn Italian with Alessio - Manipulatives</title>
+    <style>
+        body {
+            font-family: 'Varela Round', sans-serif;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            background-color: #f9f9f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        header {
+            width: 100%;
+            background-color: #31394d;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            width: 100%;
+        }
+        .exercise-section {
+            margin: 10px;
+            padding: 20px;
+            background-color: #f2f2f2;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 800px;
+        }
+        .exercise-title {
+            font-size: 18px;
+            color: #31394d;
+            margin-bottom: 20px;
+        }
+        .item {
+            display: inline-block;
+            padding: 10px;
+            margin: 5px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            cursor: move;
+        }
+        .logo {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            width: 80px;
+            height: 80px;
+        }
+    </style>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-92W68TQK0P"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-92W68TQK0P');
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Learn Italian with Alessio - Manipulatives</h1>
+    </header>
+    <div class="container">
+        <div class="exercise-section">
+            <h2 class="exercise-title">Interactive Manipulatives</h2>
+            <div id="loader"><img src="images/Loading-Indicator-Lg-Gray.gif" style="margin-top: 150px;"></div>
+            <div id="content" style="display:none;"></div>
+        </div>
+    </div>
+    <img src="avatar.png" alt="Logo" class="logo">
+    <script>
+        $(document).ready(function() {
+            var pageURL = window.location.href;
+            var encodedURL = encodeURIComponent(pageURL);
+            var content = "";
+
+            if (content == "") {
+                var rawArray = [];
+                $.get("https://docs.google.com/spreadsheets/d/1MM0Ln0bRS0wd9eI-LmUntLmAwBK6iLbsyMWdgpFA14s/pubhtml", function(pubHTML) {
+                    $(pubHTML).find('table.waffle tr').each(function() {
+                        var arrayOfThisRow = [];
+                        var tableData = $(this).find('td');
+                        if (tableData.length > 1) {
+                            tableData.each(function() { arrayOfThisRow.push($(this).text()) });
+                            rawArray.push(arrayOfThisRow);
+                        }
+                    });
+                    loadContent(rawArray);
+                });
+            } else {
+                loadWebContent(content);
+            }
+
+            function loadContent(rawArray) {
+                var contentHtml = "";
+                for (var i = 0; i < rawArray.length; i++) {
+                    if (rawArray[i].join("") !== "") {
+                        contentHtml += "<div class='item' draggable='true'>" + rawArray[i][0] + "</div>";
+                    }
+                }
+                $("#content").html(contentHtml);
+                $("#loader").hide();
+                $("#content").show();
+                initializeDragAndDrop();
+            }
+
+            function loadWebContent(content) {
+                var rawTerms = decodeURIComponent(content).split(",");
+                var contentHtml = "";
+                for (var i = 0; i < rawTerms.length; i++) {
+                    contentHtml += "<div class='item' draggable='true'>" + rawTerms[i] + "</div>";
+                }
+                $("#content").html(contentHtml);
+                $("#loader").hide();
+                $("#content").show();
+                initializeDragAndDrop();
+            }
+
+            function initializeDragAndDrop() {
+                var items = document.querySelectorAll('.item');
+                items.forEach(function(item) {
+                    item.addEventListener('dragstart', handleDragStart, false);
+                    item.addEventListener('dragover', handleDragOver, false);
+                    item.addEventListener('drop', handleDrop, false);
+                    item.addEventListener('dragend', handleDragEnd, false);
+                });
+            }
+
+            var dragSrcEl = null;
+
+            function handleDragStart(e) {
+                dragSrcEl = this;
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/html', this.innerHTML);
+                this.classList.add('dragElem');
+            }
+
+            function handleDragOver(e) {
+                if (e.preventDefault) {
+                    e.preventDefault(); // Necessary. Allows us to drop.
+                }
+                e.dataTransfer.dropEffect = 'move'; // See the section on the DataTransfer object.
+                return false;
+            }
+
+            function handleDrop(e) {
+                if (e.stopPropagation) {
+                    e.stopPropagation(); // Stops some browsers from redirecting.
+                }
+                // Don't do anything if dropping the same column we're dragging.
+                if (dragSrcEl !== this) {
+                    dragSrcEl.innerHTML = this.innerHTML;
+                    this.innerHTML = e.dataTransfer.getData('text/html');
+                }
+                return false;
+            }
+
+            function handleDragEnd(e) {
+                items.forEach(function(item) {
+                    item.classList.remove('dragElem');
+                });
+            }
+        });
+    </script>
+</body>
+</html>
