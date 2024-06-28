@@ -1,177 +1,103 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learn Italian with Alessio - Passato Prossimo</title>
+    <title>Uso del passato prossimo :: Impariamo l'italiano</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 0;
-            width: 100%;
+            padding: 20px;
             background-color: #f9f9f9;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
         }
-        header {
-            width: 100%;
-            background-color: #31394d;
-            color: white;
+        .exercise {
+            background-color: #fff;
             padding: 20px;
-            text-align: center;
-        }
-        header h1 {
-            margin: 0;
-        }
-        .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            width: 100%;
-        }
-        .exercise-section {
-            margin: 10px;
-            padding: 20px;
-            background-color: #f2f2f2;
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 800px;
-        }
-        .exercise-title {
-            font-size: 18px;
-            color: #31394d;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             margin-bottom: 20px;
         }
         .gap-box {
-            width: 100%;
-            max-width: 100px;
             margin-left: 10px;
         }
-        .actions {
-            display: flex;
-            justify-content: space-between;
+        .feedback {
+            display: none;
             margin-top: 20px;
-        }
-        .actions button {
-            background-color: #31394d;
-            color: white;
-            border: none;
             padding: 10px;
             border-radius: 5px;
-            cursor: pointer;
         }
-        .actions button:hover {
-            background-color: #005bb5;
+        .feedback.correct {
+            background-color: #d4edda;
+            color: #155724;
         }
-        .logo {
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
-            width: 80px;
-            height: 80px;
+        .feedback.incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Learn Italian with Alessio - Passato Prossimo</h1>
-    </header>
-    <div class="container">
-        <div class="exercise-section">
-            <h2 class="exercise-title">Completa le frasi con il passato prossimo dei verbi indicati</h2>
-            <form id="exercise-form" onsubmit="return false;">
-                <ol>
-                    <li>
-                        L'incidente 
-                        <input type="text" id="Gap0" class="gap-box" size="10"> 
-                        (succedere) sull'autostrada.
-                    </li>
-                    <li>
-                        Ieri sera Giovanna e Sonia 
-                        <input type="text" id="Gap1" class="gap-box" size="10"> 
-                        (essere) al cinema.
-                    </li>
-                    <li>
-                        Ieri lei 
-                        <input type="text" id="Gap2" class="gap-box" size="8"> 
-                        (andare) in campagna.
-                    </li>
-                    <li>
-                        Dante Alighieri 
-                        <input type="text" id="Gap3" class="gap-box" size="6"> 
-                        (nascere) a Firenze nel 1265.
-                    </li>
-                    <li>
-                        Come 
-                        <input type="text" id="Gap4" class="gap-box" size="11"> 
-                        (diventare) difficile trovare lavoro oggi!
-                    </li>
-                    <li>
-                        Chi 
-                        <input type="text" id="Gap5" class="gap-box" size="6"> 
-                        (venire) ieri sera?
-                    </li>
-                    <li>
-                        Che cosa 
-                        <input type="text" id="Gap6" class="gap-box" size="9"> 
-                        (fare, tu) stasera?
-                    </li>
-                    <li>
-                        Carla 
-                        <input type="text" id="Gap7" class="gap-box" size="8"> 
-                        (dire) che ha visto molte cose in Sardegna.
-                    </li>
-                    <li>
-                        Alessandra, 
-                        <input type="text" id="Gap8" class="gap-box" size="8"> 
-                        (dare) una festa ieri sera?
-                    </li>
-                    <li>
-                        A vent'anni Anna 
-                        <input type="text" id="Gap9" class="gap-box" size="8"> 
-                        (andare) a vivere da sola.
-                    </li>
-                </ol>
-                <div class="actions">
-                    <button onclick="checkAnswers()">Controlla</button>
-                    <button onclick="showHint()">Aiuto</button>
-                </div>
-            </form>
-        </div>
+    <div class="exercise">
+        <h2>Completa le frasi con il passato prossimo dei verbi indicati</h2>
+        <form id="exercise-form" onsubmit="return false;">
+            <ol>
+                <li>L'incidente <input type="text" id="Gap0" class="gap-box" size="10"> (succedere) sull'autostrada.</li>
+                <li>Ieri sera Giovanna e Sonia <input type="text" id="Gap1" class="gap-box" size="10"> (essere) al cinema.</li>
+                <li>Ieri lei <input type="text" id="Gap2" class="gap-box" size="8"> (andare) in campagna.</li>
+                <li>Dante Alighieri <input type="text" id="Gap3" class="gap-box" size="6"> (nascere) a Firenze nel 1265.</li>
+                <li>Come <input type="text" id="Gap4" class="gap-box" size="11"> (diventare) difficile trovare lavoro oggi!</li>
+                <li>Chi <input type="text" id="Gap5" class="gap-box" size="6"> (venire) ieri sera?</li>
+                <li>Che cosa <input type="text" id="Gap6" class="gap-box" size="9"> (fare, tu) stasera?</li>
+                <li>Carla <input type="text" id="Gap7" class="gap-box" size="8"> (dire) che ha visto molte cose in Sardegna.</li>
+                <li>Alessandra, <input type="text" id="Gap8" class="gap-box" size="8"> (dare) una festa ieri sera?</li>
+                <li>A vent'anni Anna <input type="text" id="Gap9" class="gap-box" size="8"> (andare) a vivere da sola.</li>
+            </ol>
+            <div class="actions">
+                <button type="button" onclick="checkAnswers()">Controlla</button>
+                <button type="button" onclick="showHint()">Aiuto</button>
+            </div>
+        </form>
+        <div id="feedback" class="feedback"></div>
     </div>
-    <img src="avatar.png" alt="Logo" class="logo">
     <script>
+        const correctAnswers = [
+            'è successo',
+            'sono state',
+            'è andata',
+            'è nato',
+            'è diventato',
+            'è venuto',
+            'hai fatto',
+            'ha detto',
+            'hai dato',
+            'è andata'
+        ];
+
         function checkAnswers() {
-            const correctAnswers = [
-                'è successo',
-                'sono state',
-                'è andata',
-                'è nato',
-                'è diventato',
-                'è venuto',
-                'hai fatto',
-                'ha detto',
-                'hai dato',
-                'è andata'
-            ];
-            
+            let allCorrect = true;
             for (let i = 0; i < correctAnswers.length; i++) {
                 const userAnswer = document.getElementById(`Gap${i}`).value.trim();
                 if (userAnswer === correctAnswers[i]) {
-                    alert('Giusto!');
+                    document.getElementById(`Gap${i}`).style.backgroundColor = '#d4edda';
                 } else {
-                    alert('Alcune risposte sbagliate');
+                    document.getElementById(`Gap${i}`).style.backgroundColor = '#f8d7da';
+                    allCorrect = false;
                 }
+            }
+            const feedbackDiv = document.getElementById('feedback');
+            feedbackDiv.style.display = 'block';
+            if (allCorrect) {
+                feedbackDiv.textContent = 'Giusto!';
+                feedbackDiv.className = 'feedback correct';
+            } else {
+                feedbackDiv.textContent = 'Alcune risposte sbagliate';
+                feedbackDiv.className = 'feedback incorrect';
             }
         }
 
         function showHint() {
             alert('Ti è stata data una lettera');
-            // This is a placeholder function. Implement hint logic as needed.
         }
     </script>
 </body>
