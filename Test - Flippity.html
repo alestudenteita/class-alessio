@@ -40,6 +40,7 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             width: 100%;
             max-width: 800px;
+            position: relative;
         }
         .exercise-title {
             font-size: 18px;
@@ -54,6 +55,7 @@
             border: 1px solid #ccc;
             border-radius: 5px;
             cursor: move;
+            position: absolute;
         }
         .logo {
             position: fixed;
@@ -65,10 +67,10 @@
     </style>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-92W68TQK0P"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-92W68TQK0P');
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-92W68TQK0P');
     </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
@@ -77,7 +79,7 @@
         <h1>Learn Italian with Alessio - Manipulatives</h1>
     </header>
     <div class="container">
-        <div class="exercise-section">
+        <div class="exercise-section" id="exercise-section">
             <h2 class="exercise-title">Interactive Manipulatives</h2>
             <div id="loader"><img src="images/Loading-Indicator-Lg-Gray.gif" style="margin-top: 150px;"></div>
             <div id="content" style="display:none;"></div>
@@ -111,7 +113,7 @@
                 var contentHtml = "";
                 for (var i = 0; i < rawArray.length; i++) {
                     if (rawArray[i].join("") !== "") {
-                        contentHtml += "<div class='item' draggable='true'>" + rawArray[i][0] + "</div>";
+                        contentHtml += "<div class='item' draggable='true' style='left:" + (Math.random() * 500) + "px; top:" + (Math.random() * 300) + "px;'>" + rawArray[i][0] + "</div>";
                     }
                 }
                 $("#content").html(contentHtml);
@@ -124,7 +126,7 @@
                 var rawTerms = decodeURIComponent(content).split(",");
                 var contentHtml = "";
                 for (var i = 0; i < rawTerms.length; i++) {
-                    contentHtml += "<div class='item' draggable='true'>" + rawTerms[i] + "</div>";
+                    contentHtml += "<div class='item' draggable='true' style='left:" + (Math.random() * 500) + "px; top:" + (Math.random() * 300) + "px;'>" + rawTerms[i] + "</div>";
                 }
                 $("#content").html(contentHtml);
                 $("#loader").hide();
@@ -135,47 +137,50 @@
             function initializeDragAndDrop() {
                 var items = document.querySelectorAll('.item');
                 items.forEach(function(item) {
-                    item.addEventListener('dragstart', handleDragStart, false);
-                    item.addEventListener('dragover', handleDragOver, false);
-                    item.addEventListener('drop', handleDrop, false);
-                    item.addEventListener('dragend', handleDragEnd, false);
+                    item.addEventListener('mousedown', dragStart, false);
+                    item.addEventListener('mouseup', dragEnd, false);
+                    item.addEventListener('mousemove', drag, false);
                 });
             }
 
-            var dragSrcEl = null;
+            var activeItem = null;
+            var active = false;
+            var currentX, currentY, initialX, initialY, xOffset = 0, yOffset = 0;
 
-            function handleDragStart(e) {
-                dragSrcEl = this;
-                e.dataTransfer.effectAllowed = 'move';
-                e.dataTransfer.setData('text/html', this.innerHTML);
-                this.classList.add('dragElem');
+            function dragStart(e) {
+                if (e.target !== e.currentTarget) {
+                    active = true;
+                    activeItem = e.target;
+
+                    initialX = e.clientX - xOffset;
+                    initialY = e.clientY - yOffset;
+                }
             }
 
-            function handleDragOver(e) {
-                if (e.preventDefault) {
-                    e.preventDefault(); // Necessary. Allows us to drop.
-                }
-                e.dataTransfer.dropEffect = 'move'; // See the section on the DataTransfer object.
-                return false;
+            function dragEnd(e) {
+                initialX = currentX;
+                initialY = currentY;
+
+                active = false;
+                activeItem = null;
             }
 
-            function handleDrop(e) {
-                if (e.stopPropagation) {
-                    e.stopPropagation(); // Stops some browsers from redirecting.
+            function drag(e) {
+                if (active) {
+                    e.preventDefault();
+
+                    currentX = e.clientX - initialX;
+                    currentY = e.clientY - initialY;
+
+                    xOffset = currentX;
+                    yOffset = currentY;
+
+                    setTranslate(currentX, currentY, activeItem);
                 }
-                // Don't do anything if dropping the same column we're dragging.
-                if (dragSrcEl !== this) {
-                    dragSrcEl.innerHTML = this.innerHTML;
-                    this.innerHTML = e.dataTransfer.getData('text/html');
-                }
-                return false;
             }
 
-            function handleDragEnd(e) {
-                var items = document.querySelectorAll('.item');
-                items.forEach(function(item) {
-                    item.classList.remove('dragElem');
-                });
+            function setTranslate(xPos, yPos, el) {
+                el.style.transform = "translate3d(" + xPos + "px, " + yPos + "px, 0)";
             }
         });
     </script>
