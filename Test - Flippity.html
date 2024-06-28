@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learn Italian with Alessio - Manipulatives</title>
+    <title>Learn Italian with Alessio</title>
     <style>
         body {
-            font-family: 'Varela Round', sans-serif;
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             width: 100%;
@@ -26,38 +26,29 @@
             margin: 0;
         }
         .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            width: 100%;
-        }
-        .exercise-section {
-            margin: 10px;
-            padding: 20px;
-            background-color: #f2f2f2;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 800px;
             position: relative;
-            height: 600px; /* Adjust height as necessary */
-            overflow: hidden; /* Hide overflow to keep items within bounds */
-        }
-        .exercise-title {
-            font-size: 18px;
-            color: #31394d;
-            margin-bottom: 20px;
-        }
-        .item {
-            display: inline-block;
-            padding: 10px;
-            margin: 5px;
-            background-color: #e0e0e0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
+            width: 100%;
+            height: 80vh;
             border: 1px solid #ccc;
+            overflow: hidden;
+        }
+        .course {
+            cursor: pointer;
+            margin: 5px;
+            padding: 10px;
+            background-color: #31394d;
+            color: #fff;
             border-radius: 5px;
-            cursor: move;
+            text-align: center;
             position: absolute;
+            display: inline-block;
+        }
+        .course:hover {
+            background-color: #005bb5;
         }
         .logo {
             position: fixed;
@@ -70,82 +61,81 @@
 </head>
 <body>
     <header>
-        <h1>Learn Italian with Alessio - Manipulatives</h1>
+        <h1>Learn Italian with Alessio</h1>
     </header>
-    <div class="container">
-        <div class="exercise-section" id="exercise-section">
-            <h2 class="exercise-title">Interactive Manipulatives</h2>
-            <div id="content">
-                <!-- Words will be dynamically inserted here -->
-            </div>
-        </div>
+    <div class="container" id="course-container">
+        <!-- Hardcoded words and sentences as per your requirement -->
     </div>
     <img src="avatar.png" alt="Logo" class="logo">
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const words = [
-                "Buongiorno!", "Come stai?", "Sto bene, grazie.", "Arrivederci!", 
-                "Perfetto.", "Grazie.", "Prego.", "Scusa."
-            ]; // Hardcoded words
+                "Wordwall - Impersonali",
+                "Flippity - Alle poste",
+                "Impariamo Italiano - Imperfetto",
+                "Pubblicità - Imperfetto di cortesia",
+                "Dieci - Videocorso A2 Come eravamo",
+                "Alma TV - C'ero prima io",
+                "Wordwall - Passato Prossimo",
+                "Italiano in Onda - Gerundio Passato",
+                "Wordwall - La mia scuola",
+                "Wordwall - Articoli Indeterminativi",
+                "Dieci - Videocorso A1 Benvenuti",
+                "Flippity - Domande presentazioni",
+                "Karissa - Riccioli Doro frasi",
+                "Karissa - Riccioli Doro parole",
+                "Karissa - Riccioli Doro parole quiz",
+                "Flippity - Internet cafe",
+                "Wordwall - Presente indicativo",
+                "Karissa - Personalità, aspetto, emozioni"
+            ];
 
-            const container = document.getElementById('content');
-            const exerciseSection = document.getElementById('exercise-section');
+            const container = document.getElementById('course-container');
 
-            words.forEach(word => {
+            words.forEach((word, index) => {
                 const div = document.createElement('div');
-                div.className = 'item';
+                div.className = 'course';
                 div.textContent = word;
-                // Position randomly within the container
-                div.style.left = Math.random() * (exerciseSection.clientWidth - 100) + 'px';
-                div.style.top = Math.random() * (exerciseSection.clientHeight - 50) + 'px';
+                div.style.left = `${Math.random() * 80}vw`;
+                div.style.top = `${Math.random() * 80}vh`;
                 container.appendChild(div);
+
+                div.draggable = true;
+
+                div.addEventListener('dragstart', function(e) {
+                    e.dataTransfer.setData('text/plain', index);
+                    div.classList.add('dragging');
+                });
+
+                div.addEventListener('dragend', function() {
+                    div.classList.remove('dragging');
+                });
+
+                div.addEventListener('touchstart', function(e) {
+                    e.target.style.position = 'absolute';
+                });
+
+                div.addEventListener('touchmove', function(e) {
+                    const touchLocation = e.targetTouches[0];
+                    div.style.left = `${touchLocation.pageX}px`;
+                    div.style.top = `${touchLocation.pageY}px`;
+                });
             });
 
-            var activeItem = null;
-            var active = false;
-            var currentX, currentY, initialX, initialY, xOffset = 0, yOffset = 0;
-
-            document.querySelectorAll('.item').forEach(function(item) {
-                item.addEventListener('mousedown', dragStart, false);
-                item.addEventListener('mouseup', dragEnd, false);
-                item.addEventListener('mousemove', drag, false);
+            container.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                const draggingElement = document.querySelector('.dragging');
+                if (draggingElement) {
+                    const rect = container.getBoundingClientRect();
+                    draggingElement.style.left = `${e.clientX - rect.left - draggingElement.clientWidth / 2}px`;
+                    draggingElement.style.top = `${e.clientY - rect.top - draggingElement.clientHeight / 2}px`;
+                }
             });
 
-            function dragStart(e) {
-                if (e.target !== e.currentTarget) {
-                    active = true;
-                    activeItem = e.target;
-
-                    initialX = e.clientX - xOffset;
-                    initialY = e.clientY - yOffset;
-                }
-            }
-
-            function dragEnd(e) {
-                initialX = currentX;
-                initialY = currentY;
-
-                active = false;
-                activeItem = null;
-            }
-
-            function drag(e) {
-                if (active) {
-                    e.preventDefault();
-
-                    currentX = e.clientX - initialX;
-                    currentY = e.clientY - initialY;
-
-                    xOffset = currentX;
-                    yOffset = currentY;
-
-                    setTranslate(currentX, currentY, activeItem);
-                }
-            }
-
-            function setTranslate(xPos, yPos, el) {
-                el.style.transform = "translate3d(" + xPos + "px, " + yPos + "px, 0)";
-            }
+            container.addEventListener('drop', function(e) {
+                e.preventDefault();
+            });
         });
     </script>
 </body>
