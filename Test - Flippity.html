@@ -51,6 +51,7 @@
             padding: 10px;
             margin: 5px;
             background-color: #e0e0e0;
+            border: 1px solid #ccc;
             border-radius: 5px;
             cursor: move;
         }
@@ -171,6 +172,7 @@
             }
 
             function handleDragEnd(e) {
+                var items = document.querySelectorAll('.item');
                 items.forEach(function(item) {
                     item.classList.remove('dragElem');
                 });
