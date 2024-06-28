@@ -63,6 +63,8 @@
             padding: 10px;
             border-radius: 5px;
             cursor: pointer;
+            flex: 1;
+            margin: 0 5px;
         }
         .actions button:hover {
             background-color: #005bb5;
@@ -156,7 +158,15 @@
         }
 
         function showHint() {
-            alert('Ti è stata data una lettera');
+            for (let i = 0; i < correctAnswers.length; i++) {
+                const inputField = document.getElementById(`Gap${i}`);
+                const userAnswer = inputField.value.trim();
+                if (userAnswer === '') {
+                    inputField.value = correctAnswers[i][0];
+                    inputField.style.backgroundColor = '#fff3cd'; // Hint color
+                    break;
+                }
+            }
         }
     </script>
 </body>
