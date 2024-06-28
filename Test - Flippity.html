@@ -41,6 +41,8 @@
             width: 100%;
             max-width: 800px;
             position: relative;
+            height: 600px; /* Adjust height as necessary */
+            overflow: hidden; /* Hide overflow to keep items within bounds */
         }
         .exercise-title {
             font-size: 18px;
@@ -65,14 +67,6 @@
             height: 80px;
         }
     </style>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-92W68TQK0P"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-92W68TQK0P');
-    </script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
     <header>
@@ -81,71 +75,41 @@
     <div class="container">
         <div class="exercise-section" id="exercise-section">
             <h2 class="exercise-title">Interactive Manipulatives</h2>
-            <div id="loader"><img src="images/Loading-Indicator-Lg-Gray.gif" style="margin-top: 150px;"></div>
-            <div id="content" style="display:none;"></div>
+            <div id="content">
+                <!-- Words will be dynamically inserted here -->
+            </div>
         </div>
     </div>
     <img src="avatar.png" alt="Logo" class="logo">
     <script>
-        $(document).ready(function() {
-            var pageURL = window.location.href;
-            var encodedURL = encodeURIComponent(pageURL);
-            var content = "";
+        document.addEventListener('DOMContentLoaded', function() {
+            const words = [
+                "Buongiorno!", "Come stai?", "Sto bene, grazie.", "Arrivederci!", 
+                "Perfetto.", "Grazie.", "Prego.", "Scusa."
+            ]; // Hardcoded words
 
-            if (content == "") {
-                var rawArray = [];
-                $.get("https://docs.google.com/spreadsheets/d/1MM0Ln0bRS0wd9eI-LmUntLmAwBK6iLbsyMWdgpFA14s/pubhtml", function(pubHTML) {
-                    $(pubHTML).find('table.waffle tr').each(function() {
-                        var arrayOfThisRow = [];
-                        var tableData = $(this).find('td');
-                        if (tableData.length > 1) {
-                            tableData.each(function() { arrayOfThisRow.push($(this).text()) });
-                            rawArray.push(arrayOfThisRow);
-                        }
-                    });
-                    loadContent(rawArray);
-                });
-            } else {
-                loadWebContent(content);
-            }
+            const container = document.getElementById('content');
+            const exerciseSection = document.getElementById('exercise-section');
 
-            function loadContent(rawArray) {
-                var contentHtml = "";
-                for (var i = 0; i < rawArray.length; i++) {
-                    if (rawArray[i].join("") !== "") {
-                        contentHtml += "<div class='item' draggable='true' style='left:" + (Math.random() * 500) + "px; top:" + (Math.random() * 300) + "px;'>" + rawArray[i][0] + "</div>";
-                    }
-                }
-                $("#content").html(contentHtml);
-                $("#loader").hide();
-                $("#content").show();
-                initializeDragAndDrop();
-            }
-
-            function loadWebContent(content) {
-                var rawTerms = decodeURIComponent(content).split(",");
-                var contentHtml = "";
-                for (var i = 0; i < rawTerms.length; i++) {
-                    contentHtml += "<div class='item' draggable='true' style='left:" + (Math.random() * 500) + "px; top:" + (Math.random() * 300) + "px;'>" + rawTerms[i] + "</div>";
-                }
-                $("#content").html(contentHtml);
-                $("#loader").hide();
-                $("#content").show();
-                initializeDragAndDrop();
-            }
-
-            function initializeDragAndDrop() {
-                var items = document.querySelectorAll('.item');
-                items.forEach(function(item) {
-                    item.addEventListener('mousedown', dragStart, false);
-                    item.addEventListener('mouseup', dragEnd, false);
-                    item.addEventListener('mousemove', drag, false);
-                });
-            }
+            words.forEach(word => {
+                const div = document.createElement('div');
+                div.className = 'item';
+                div.textContent = word;
+                // Position randomly within the container
+                div.style.left = Math.random() * (exerciseSection.clientWidth - 100) + 'px';
+                div.style.top = Math.random() * (exerciseSection.clientHeight - 50) + 'px';
+                container.appendChild(div);
+            });
 
             var activeItem = null;
             var active = false;
             var currentX, currentY, initialX, initialY, xOffset = 0, yOffset = 0;
+
+            document.querySelectorAll('.item').forEach(function(item) {
+                item.addEventListener('mousedown', dragStart, false);
+                item.addEventListener('mouseup', dragEnd, false);
+                item.addEventListener('mousemove', drag, false);
+            });
 
             function dragStart(e) {
                 if (e.target !== e.currentTarget) {
