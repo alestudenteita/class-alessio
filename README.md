@@ -12,6 +12,3 @@ This is a collection of web pages for learning Italian, created by Alessio. You 
 1. Clone the repository.
 2. Open the folder in Visual Studio Code.
 3. Use the Live Server extension to view the pages locally.
-
-## License
-This project is licensed under the MIT License.
